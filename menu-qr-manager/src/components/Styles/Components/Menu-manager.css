@@ -1,0 +1,383 @@
+.menu-manager {
+  padding: 1.5rem;
+}
+
+.menu-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.menu-manager-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.menu-manager-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Estilos para MenuList */
+.menu-list {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.menu-list-header {
+  padding: 1rem 1.5rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-list-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.menu-list-search {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  width: 250px;
+}
+
+.menu-list-search input {
+  border: none;
+  outline: none;
+  flex: 1;
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.menu-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.menu-table th {
+  background-color: #f8f9fa;
+  text-align: left;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.menu-table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+  color: #666;
+}
+
+.menu-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.menu-table-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.menu-table-action {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menu-table-action.edit {
+  background-color: #f1c40f;
+  color: #fff;
+}
+
+.menu-table-action.edit:hover {
+  background-color: #f39c12;
+}
+
+.menu-table-action.view {
+  background-color: #3498db;
+  color: #fff;
+}
+
+.menu-table-action.view:hover {
+  background-color: #2980b9;
+}
+
+.menu-table-action.delete {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.menu-table-action.delete:hover {
+  background-color: #c0392b;
+}
+
+.menu-table-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.menu-table-badge.active {
+  background-color: #e3fcef;
+  color: #2ecc71;
+}
+
+.menu-table-badge.inactive {
+  background-color: #feeaea;
+  color: #e74c3c;
+}
+
+.menu-table-badge.draft {
+  background-color: #f5f6f7;
+  color: #95a5a6;
+}
+
+/* Estilos para MenuForm */
+.menu-form {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.menu-form-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 1rem;
+}
+
+.menu-form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.menu-form-body {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.menu-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.menu-form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.menu-form-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.menu-form-input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.menu-form-input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.menu-form-textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  min-height: 120px;
+  resize: vertical;
+}
+
+.menu-form-textarea:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.menu-form-select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.menu-form-select:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.menu-form-help {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 0.25rem;
+}
+
+.menu-form-error {
+  font-size: 0.85rem;
+  color: #e74c3c;
+  margin-top: 0.25rem;
+}
+
+.menu-form-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.menu-form-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menu-form-button.primary {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+}
+
+.menu-form-button.primary:hover {
+  background-color: #2980b9;
+}
+
+.menu-form-button.secondary {
+  background-color: #fff;
+  color: #555;
+  border: 1px solid #ddd;
+}
+
+.menu-form-button.secondary:hover {
+  background-color: #f5f5f5;
+}
+
+/* Estilos para QrGenerator */
+.qr-generator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.qr-generator-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.qr-code-container {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.qr-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.qr-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.qr-button.download {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+}
+
+.qr-button.download:hover {
+  background-color: #2980b9;
+}
+
+.qr-button.print {
+  background-color: #fff;
+  color: #555;
+  border: 1px solid #ddd;
+}
+
+.qr-button.print:hover {
+  background-color: #f5f5f5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .menu-form-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .menu-manager-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .menu-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .menu-list-search {
+    width: 100%;
+  }
+
+  .menu-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

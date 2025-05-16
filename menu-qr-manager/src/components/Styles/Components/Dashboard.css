@@ -1,0 +1,152 @@
+.dashboard {
+  padding: 1.5rem;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+  color: #666;
+  font-size: 1rem;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.stats-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stats-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.stats-card-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.stats-card-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.stats-card-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.75rem;
+}
+
+.stats-card-change {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.stats-card-change.positive {
+  color: #2ecc71;
+}
+
+.stats-card-change.negative {
+  color: #e74c3c;
+}
+
+.stats-card-change-icon {
+  margin-right: 0.25rem;
+}
+
+.dashboard-sections {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+.dashboard-section {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.dashboard-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-section-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.dashboard-section-action {
+  color: #3498db;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.dashboard-section-action:hover {
+  color: #2980b9;
+}
+
+.dashboard-chart {
+  margin-bottom: 1.5rem;
+  height: 300px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .dashboard-sections {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard {
+    padding: 1rem;
+  }
+  
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-card-value {
+    font-size: 1.8rem;
+  }
+}
