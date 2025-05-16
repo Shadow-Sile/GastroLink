@@ -1,162 +1,222 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { getUserMenus, deleteMenu } from '../../services/menuService';
-import '../../styles/components/menu-list.css';
-import { FaEdit, FaTrash, FaQrcode, FaEye } from 'react-icons/fa';
+import { getMenus, deleteMenu, toggleMenuActive } from '../services/MenuService';
+import { 
+  Box, 
+  Button, 
+  Typography, 
+  Card, 
+  CardContent, 
+  CardActions, 
+  Grid, 
+  IconButton, 
+  Switch, 
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Skeleton
+} from '@mui/material';
+import { Edit, Delete, Visibility, QrCode } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 
 const MenuList = () => {
-  const { currentUser } = useAuth();
   const [menus, setMenus] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [menuToDelete, setMenuToDelete] = useState(null);
 
   useEffect(() => {
-    const fetchMenus = async () => {
-      if (!currentUser) return;
-      
-      try {
-        const { menus, error } = await getUserMenus(currentUser.uid);
-        
-        if (error) {
-          setError('Error al cargar tus menús');
-        } else {
-          setMenus(menus);
-        }
-      } catch (err) {
-        setError('Error inesperado. Inténtalo de nuevo más tarde.');
-      } finally {
-        setLoading(false);
-      }
-    };
+    loadMenus();
+  }, []);
 
-    fetchMenus();
-  }, [currentUser]);
-
-  const handleDeleteClick = (menuId) => {
-    setDeleteConfirm(menuId);
-  };
-
-  const handleDeleteCancel = () => {
-    setDeleteConfirm(null);
-  };
-
-  const handleDeleteConfirm = async (menuId) => {
+  const loadMenus = async () => {
     try {
-      const { success, error } = await deleteMenu(menuId);
-      
-      if (error) {
-        setError('Error al eliminar el menú');
-      } else {
-      
-        setMenus(menus.filter(menu => menu.id !== menuId));
-      }
-    } catch (err) {
-      setError('Error inesperado. Inténtalo de nuevo más tarde.');
+      setLoading(true);
+      const data = await getMenus();
+      setMenus(data);
+    } catch (error) {
+      console.error('Error loading menus:', error);
+      toast.error('Error al cargar los menús');
     } finally {
-      setDeleteConfirm(null);
+      setLoading(false);
     }
   };
 
-  if (loading) {
-    return <div className="loading">Cargando menús...</div>;
-  }
+  const handleToggleActive = async (menu) => {
+    try {
+      await toggleMenuActive(menu.id, !menu.active);
+      setMenus(menus.map(m => 
+        m.id === menu.id ? { ...m, active: !m.active } : m
+      ));
+      toast.success(`Menú ${!menu.active ? 'activado' : 'desactivado'} correctamente`);
+    } catch (error) {
+      console.error('Error toggling menu status:', error);
+      toast.error('Error al cambiar el estado del menú');
+    }
+  };
+
+  const openDeleteDialog = (menu) => {
+    setMenuToDelete(menu);
+    setDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setMenuToDelete(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!menuToDelete) return;
+    
+    try {
+      await deleteMenu(menuToDelete.id);
+      setMenus(menus.filter(menu => menu.id !== menuToDelete.id));
+      toast.success('Menú eliminado correctamente');
+    } catch (error) {
+      console.error('Error deleting menu:', error);
+      toast.error('Error al eliminar el menú');
+    } finally {
+      closeDeleteDialog();
+    }
+  };
 
   return (
-    <div className="menu-list">
-      <div className="menu-list-header">
-        <h2>Mis Menús</h2>
-        <Link to="/dashboard/menus/new" className="create-menu-button">
-          Crear Menú
-        </Link>
-      </div>
-      
-      {error && <div className="error-message">{error}</div>}
-      
-      {menus.length === 0 ? (
-        <div className="no-menus">
-          <p>Aún no has creado ningún menú.</p>
-          <Link to="/dashboard/menus/new" className="create-menu-button">
+    <Box sx={{ mt: 4 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+        <Typography variant="h4" component="h2">
+          Tus Menús
+        </Typography>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          component={Link} 
+          to="/menus/new"
+        >
+          Crear Nuevo Menú
+        </Button>
+      </Box>
+
+      {loading ? (
+        <Grid container spacing={3}>
+          {[1, 2, 3].map((item) => (
+            <Grid item xs={12} md={4} key={item}>
+              <Card>
+                <CardContent>
+                  <Skeleton variant="text" height={40} />
+                  <Skeleton variant="text" />
+                  <Skeleton variant="text" width="60%" />
+                </CardContent>
+                <CardActions>
+                  <Skeleton variant="rectangular" width={180} height={36} />
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      ) : menus.length === 0 ? (
+        <Box textAlign="center" my={5}>
+          <Typography variant="h6" color="textSecondary" gutterBottom>
+            No tienes menús creados
+          </Typography>
+          <Button 
+            variant="contained" 
+            component={Link} 
+            to="/menus/new" 
+            sx={{ mt: 2 }}
+          >
             Crear tu primer menú
-          </Link>
-        </div>
+          </Button>
+        </Box>
       ) : (
-        <div className="menus-table-container">
-          <table className="menus-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Categorías</th>
-                <th>Platos</th>
-                <th>Estado</th>
-                <th>Fecha de creación</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {menus.map(menu => (
-                <tr key={menu.id}>
-                  <td>{menu.name}</td>
-                  <td>{menu.categories?.length || 0}</td>
-                  <td>
-                    {menu.categories?.reduce((acc, cat) => acc + (cat.items?.length || 0), 0) || 0}
-                  </td>
-                  <td>
-                    <span className={`status ${menu.active !== false ? 'active' : 'inactive'}`}>
-                      {menu.active !== false ? 'Activo' : 'Inactivo'}
-                    </span>
-                  </td>
-                  <td>
-                    {menu.createdAt ? new Date(menu.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}
-                  </td>
-                  <td className="actions-cell">
-                    <div className="menu-actions">
-                      <Link to={`/dashboard/menus/${menu.id}`} className="action-button edit" title="Editar">
-                        <FaEdit />
-                      </Link>
-                      <Link to={`/menu/${menu.qrCodeId}`} target="_blank" className="action-button view" title="Vista previa">
-                        <FaEye />
-                      </Link>
-                      <Link to={`/dashboard/menus/${menu.id}/qr`} className="action-button qr" title="Código QR">
-                        <FaQrcode />
-                      </Link>
-                      <button 
-                        className="action-button delete" 
-                        onClick={() => handleDeleteClick(menu.id)}
-                        title="Eliminar"
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                    
-                    {deleteConfirm === menu.id && (
-                      <div className="delete-confirm-dialog">
-                        <p>¿Seguro que quieres eliminar este menú?</p>
-                        <div className="delete-actions">
-                          <button 
-                            className="cancel-button" 
-                            onClick={handleDeleteCancel}
-                          >
-                            Cancelar
-                          </button>
-                          <button 
-                            className="confirm-button" 
-                            onClick={() => handleDeleteConfirm(menu.id)}
-                          >
-                            Eliminar
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Grid container spacing={3}>
+          {menus.map((menu) => (
+            <Grid item xs={12} sm={6} md={4} key={menu.id}>
+              <Card 
+                variant="outlined" 
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  opacity: menu.active ? 1 : 0.7
+                }}
+              >
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography variant="h5" component="h3" gutterBottom>
+                    {menu.name}
+                  </Typography>
+                  <Typography color="textSecondary" gutterBottom>
+                    {menu.restaurantName}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {menu.description || 'Sin descripción'}
+                  </Typography>
+                  <Box display="flex" alignItems="center" mt={1}>
+                    <Typography variant="body2" mr={1}>
+                      {menu.active ? 'Activo' : 'Inactivo'}
+                    </Typography>
+                    <Switch
+                      checked={menu.active}
+                      onChange={() => handleToggleActive(menu)}
+                      size="small"
+                    />
+                  </Box>
+                </CardContent>
+                <CardActions>
+                  <IconButton 
+                    component={Link} 
+                    to={`/menus/${menu.id}/edit`} 
+                    title="Editar menú"
+                  >
+                    <Edit />
+                  </IconButton>
+                  <IconButton 
+                    component={Link} 
+                    to={`/menus/${menu.id}`} 
+                    title="Ver menú"
+                  >
+                    <Visibility />
+                  </IconButton>
+                  <IconButton 
+                    component={Link} 
+                    to={`/menus/${menu.id}/qr`} 
+                    title="Generar código QR"
+                  >
+                    <QrCode />
+                  </IconButton>
+                  <IconButton 
+                    onClick={() => openDeleteDialog(menu)} 
+                    color="error"
+                    title="Eliminar menú"
+                  >
+                    <Delete />
+                  </IconButton>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       )}
-    </div>
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={closeDeleteDialog}
+      >
+        <DialogTitle>Confirmar eliminación</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            ¿Estás seguro de que deseas eliminar el menú "{menuToDelete?.name}"? Esta acción no se puede deshacer.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDeleteDialog}>Cancelar</Button>
+          <Button onClick={confirmDelete} color="error" variant="contained">
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 };
 
