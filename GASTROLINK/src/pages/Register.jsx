@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { QrCode } from "lucide-react";
+import { Utensils } from "lucide-react";
 import { useFirebase } from "@/context/FirebaseContext";
 import { Separator } from "@/components/ui/separator";
 
@@ -60,7 +60,7 @@ const Register = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 flex flex-col items-center">
           <div className="flex items-center gap-2 mb-2">
-            <QrCode className="h-8 w-8 text-menuOrange" />
+            <Utensils className="h-8 w-8 text-menuOrange" />
             <span className="text-xl font-bold text-gray-900 font-heading">GastroLink</span>
           </div>
           <CardTitle className="text-2xl">Crear una cuenta</CardTitle>

@@ -230,12 +230,14 @@ const MenuEditor = () => {
       setSaving(true);
       let docRef;
       if (isNewMenu) {
-        docRef = await addDoc(collection(db, "menus"), {
+        // Si es una carta nueva, crea una plantilla vacía real en Firestore
+        const newMenu = {
           ...menu,
           userId: currentUser?.uid || null,
           createdAt: new Date(),
           updatedAt: new Date(),
-        });
+        };
+        docRef = await addDoc(collection(db, "menus"), newMenu);
         toast.success("Menú creado correctamente");
         setSaving(false);
         navigate(`/dashboard/edit-menu/${docRef.id}`);

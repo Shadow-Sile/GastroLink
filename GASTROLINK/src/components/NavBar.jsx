@@ -22,7 +22,7 @@ const NavBar = () => {
             </Link>
           </div>
           
-          {/* Desktop menu */}
+         
           <div className="hidden md:flex md:items-center md:space-x-4">
             <Link to="/" className="text-gray-700 hover:text-menuOrange px-3 py-2 rounded-md text-sm font-medium transition-colors">
               Inicio
@@ -38,7 +38,7 @@ const NavBar = () => {
             </Link>
           </div>
           
-          {/* Mobile menu button */}
+         
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleMenu}
@@ -55,7 +55,7 @@ const NavBar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
+    
       {isMenuOpen && (
         <div className="md:hidden bg-white pt-2 pb-4 px-4 animate-fade-in">
           <div className="space-y-1">

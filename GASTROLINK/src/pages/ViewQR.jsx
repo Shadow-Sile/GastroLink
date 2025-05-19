@@ -14,15 +14,12 @@ const ViewQR = () => {
   const [activeTab, setActiveTab] = useState("standard");
 
   useEffect(() => {
-    // Simular carga de datos desde Firebase
     const fetchMenu = async () => {
       try {
         setLoading(true);
-        // Simular retraso de red
         await new Promise(resolve => setTimeout(resolve, 800));
         
-        // En una implementación real, aquí obtendrías los datos de Firebase
-        // Por ahora, usamos datos de ejemplo
+      
         setMenu({
           id: menuId || "sample-menu-123",
           name: "Carta Primavera 2023",
@@ -39,7 +36,6 @@ const ViewQR = () => {
   }, [menuId]);
 
   const getQrValue = () => {
-    // En una aplicación real, esta sería la URL al menú digital
     return `https://menuqr.app/m/${menuId}`;
   };
 

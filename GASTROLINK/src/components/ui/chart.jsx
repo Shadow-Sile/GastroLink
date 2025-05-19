@@ -33,7 +33,7 @@ function useChart() {
 }
 
 const ChartContainer = React.forwardRef<
-  HTMLDivElement,
+  HTMLDivElement, 
   React.ComponentProps<"div"> & {
     config: ChartConfig
     children: React.ComponentProps<

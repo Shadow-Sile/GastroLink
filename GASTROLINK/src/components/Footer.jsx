@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { QrCode } from "lucide-react";
+import { Utensils } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Logo and description */}
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center">
-              <QrCode className="h-8 w-8 text-menuOrange" />
+              <Utensils className="h-8 w-8 text-menuOrange" />
               <span className="ml-2 text-xl font-bold text-white font-heading">GastroLink</span>
             </div>
             <p className="mt-4 text-sm text-gray-300">
@@ -81,7 +81,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p>&copy; {new Date().getFullYear()} GastroLink. Todos los derechos reservados.</p>
             <div className="mt-4 md:mt-0">
-              <span>Hecho con ❤️ para restaurantes</span>
+
             </div>
           </div>
         </div>

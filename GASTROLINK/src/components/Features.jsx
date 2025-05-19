@@ -1,11 +1,11 @@
-import { QrCode, Smartphone, Edit, RefreshCw } from "lucide-react";
+import { Utensils, Smartphone, Edit, RefreshCw } from "lucide-react";
 
 const features = [
 	{
 		name: "Códigos QR Dinámicos",
 		description:
 			"Genera códigos QR que nunca caducan y siempre dirigen a tu carta digital actualizada.",
-		icon: QrCode,
+		icon: Utensils,
 	},
 	{
 		name: "Diseño Responsivo",

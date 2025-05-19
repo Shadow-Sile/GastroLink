@@ -71,11 +71,11 @@ export const FirebaseProvider = ({ children }) => {
     try {
       setLoading(true);
       const provider = new GoogleAuthProvider();
-      // Forzar selección de cuenta siempre
+    
       provider.setCustomParameters({ prompt: 'select_account' });
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      // LOG para depuración
+      
       console.log("Google user:", user);
 
       if (!user || !user.uid || !user.email) {
@@ -83,13 +83,7 @@ export const FirebaseProvider = ({ children }) => {
         throw new Error("No se pudo obtener el usuario de Google o falta el email/uid.");
       }
 
-      // Opcional: Verifica si el email está verificado
-      // if (!user.emailVerified) {
-      //   toast.error("El email de Google no está verificado.");
-      //   throw new Error("El email de Google no está verificado.");
-      // }
 
-      // Intenta obtener el documento del usuario
       let userDoc;
       try {
         userDoc = await getDoc(doc(db, "users", user.uid));
@@ -115,7 +109,7 @@ export const FirebaseProvider = ({ children }) => {
       }
       toast.success('Iniciaste sesión con Google correctamente');
     } catch (error) {
-      // Mensaje más claro para errores de popup bloqueado o permisos
+   
       if (error.code === "auth/popup-closed-by-user") {
         toast.error("El popup de Google fue cerrado antes de completar el inicio de sesión.");
       } else if (error.code === "auth/cancelled-popup-request") {
@@ -126,7 +120,7 @@ export const FirebaseProvider = ({ children }) => {
         const errorMessage = error.message || "Error al iniciar sesión con Google";
         toast.error(errorMessage);
       }
-      // LOG para depuración
+      
       console.error("loginWithGoogle error:", error);
       throw error;
     } finally {

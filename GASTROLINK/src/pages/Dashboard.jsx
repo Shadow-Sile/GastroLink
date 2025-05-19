@@ -1,30 +1,147 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { QrCode, Plus, ArrowRight } from "lucide-react";
+import { Plus, ArrowRight, Utensils } from "lucide-react";
+import { db } from "@/firebase/config";
+import { collection, query, where, getDocs, orderBy, addDoc } from "firebase/firestore";
+import { useFirebase } from "@/context/FirebaseContext";
 
 const Dashboard = () => {
-  const [menus, setMenus] = useState([
-    {
-      id: "menu-1",
-      name: "Carta Primavera 2023",
-      restaurant: "Restaurante El Rincón",
-      lastUpdated: "2023-05-15",
-      qrViews: 243,
-    },
-  ]);
-
+  const [menus, setMenus] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { currentUser, logout } = useFirebase();
 
-  const handleLogout = () => {
-    // Aquí se implementaría el logout con Firebase
-    // Por ahora, simplemente redirigimos a la página de inicio
+  useEffect(() => {
+    if (!currentUser) return;
+    const fetchMenus = async () => {
+      setLoading(true);
+      try {
+        const q = query(
+          collection(db, "menus"),
+          where("userId", "==", currentUser.uid),
+          orderBy("updatedAt", "desc")
+        );
+        let querySnapshot = await getDocs(q);
+        let loadedMenus = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          lastUpdated: doc.data().updatedAt?.toDate?.() || new Date(),
+          qrViews: doc.data().qrViews || 0,
+        }));
+
+        if (loadedMenus.length === 0) {
+          const defaultMenu = {
+            name: "Carta Primavera 2023",
+            restaurant: "Restaurante El Rincón",
+            logo: "",
+            categories: [
+              {
+                id: "cat-1",
+                name: "Entrantes",
+                items: [
+                  {
+                    id: "item-1",
+                    name: "Croquetas caseras",
+                    description: "Cremosas croquetas de jamón ibérico hechas a mano (6 uds)",
+                    price: 8.50,
+                    tags: ["Popular", "Casero"],
+                    allergens: ["Gluten", "Lácteos"],
+                    ingredients: "Jamón ibérico, leche, harina, huevo, pan rallado"
+                  },
+                  {
+                    id: "item-2",
+                    name: "Ensalada César",
+                    description: "Lechuga romana, pollo, crutones, queso parmesano y salsa César",
+                    price: 9.95,
+                    tags: ["Saludable"],
+                    allergens: ["Gluten", "Huevo", "Lácteos"],
+                    ingredients: "Lechuga, pollo, pan, queso parmesano, huevo, anchoas"
+                  },
+                ]
+              },
+              {
+                id: "cat-2",
+                name: "Platos Principales",
+                items: [
+                  {
+                    id: "item-3",
+                    name: "Paella de marisco",
+                    description: "Arroz con calamares, gambas, mejillones y azafrán (mínimo 2 personas)",
+                    price: 18.00,
+                    tags: ["Especialidad", "Popular"],
+                    allergens: ["Marisco", "Moluscos"],
+                    ingredients: "Arroz, calamares, gambas, mejillones, azafrán, pimiento"
+                  },
+                  {
+                    id: "item-4",
+                    name: "Solomillo a la pimienta",
+                    description: "Solomillo de ternera con salsa de pimienta y guarnición de patatas",
+                    price: 16.50,
+                    tags: ["Sin gluten"],
+                    allergens: [],
+                    ingredients: "Solomillo de ternera, pimienta, nata, patatas"
+                  }
+                ]
+              },
+              {
+                id: "cat-3",
+                name: "Postres",
+                items: [
+                  {
+                    id: "item-5",
+                    name: "Tarta de queso casera",
+                    description: "Tarta de queso cremosa con base de galleta y mermelada de frutos rojos",
+                    price: 5.00,
+                    tags: ["Popular", "Casero"],
+                    allergens: ["Lácteos", "Gluten", "Huevo"],
+                    ingredients: "Queso crema, nata, huevo, galleta, mantequilla, frutos rojos"
+                  },
+                  {
+                    id: "item-6",
+                    name: "Helado artesanal",
+                    description: "Bola de helado a elegir: vainilla, chocolate o fresa",
+                    price: 3.50,
+                    tags: ["Sin gluten"],
+                    allergens: ["Lácteos"],
+                    ingredients: "Leche, azúcar, huevo, vainilla/chocolate/fresa"
+                  }
+                ]
+              }
+            ],
+            userId: currentUser.uid,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            qrViews: 0,
+          };
+          await addDoc(collection(db, "menus"), defaultMenu);
+          const querySnapshot2 = await getDocs(q);
+          loadedMenus = querySnapshot2.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+            lastUpdated: doc.data().updatedAt?.toDate?.() || new Date(),
+            qrViews: doc.data().qrViews || 0,
+          }));
+        }
+
+        setMenus(loadedMenus);
+      } catch (err) {
+        setMenus([]);
+      }
+      setLoading(false);
+    };
+    fetchMenus();
+  }, [currentUser]);
+
+  const handleLogout = async () => {
+    await logout();
     navigate("/");
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("es-ES", {
+  const formatDate = (date) => {
+    if (!date) return "";
+    return new Date(date).toLocaleDateString("es-ES", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -38,8 +155,8 @@ const Dashboard = () => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/dashboard" className="flex-shrink-0 flex items-center">
-                <QrCode className="h-8 w-8 text-menuOrange" />
-                <span className="ml-2 text-xl font-bold text-gray-800 font-heading">MenuQR</span>
+                <Utensils className="h-8 w-8 text-menuOrange" />
+                <span className="ml-2 text-xl font-bold text-gray-800 font-heading">GastroLink</span>
               </Link>
             </div>
             <div className="flex items-center">
@@ -85,7 +202,7 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
-                {menus.reduce((total, menu) => total + menu.qrViews, 0)}
+                {menus.reduce((total, menu) => total + (menu.qrViews || 0), 0)}
               </div>
             </CardContent>
           </Card>
@@ -106,17 +223,21 @@ const Dashboard = () => {
 
         <h2 className="text-xl font-bold text-gray-900 mb-4">Tus Cartas Digitales</h2>
 
-        {menus.length === 0 ? (
+        {loading ? (
+          <div className="text-center text-gray-500">Cargando cartas...</div>
+        ) : menus.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-8 text-center">
-            <QrCode className="h-12 w-12 mx-auto text-gray-400" />
+            <ArrowRight className="h-12 w-12 mx-auto text-gray-400" />
             <h3 className="mt-4 text-lg font-medium text-gray-900">
               No tienes cartas digitales
             </h3>
             <p className="mt-2 text-gray-500">Crea tu primera carta digital para generar un código QR.</p>
-            <Button className="mt-4 bg-menuOrange hover:bg-menuOrange-dark">
-              <Plus className="mr-2 h-4 w-4" />
-              Crear Carta Digital
-            </Button>
+            <Link to="/dashboard/create-menu">
+              <Button className="mt-4 bg-menuOrange hover:bg-menuOrange-dark">
+                <Plus className="mr-2 h-4 w-4" />
+                Crear Carta Digital
+              </Button>
+            </Link>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
